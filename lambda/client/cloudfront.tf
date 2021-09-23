@@ -1,38 +1,17 @@
-locals {
-  tfc_hostname     = "app.terraform.io"
-  tfc_organization = "bcgov"
-  project          = "th6q4e"
-  environment      = "dev"
+terraform {
+  backend "remote" {}
+      
   
 }
 
-generate "remote_state" {
-  path      = "backend.tf"
-  if_exists = "overwrite"
-  contents  = <<EOF
-terraform {
-  backend "remote" {
-    hostname = "${local.tfc_hostname}"
-    organization = "${local.tfc_organization}"
-    workspaces {
-      name = "${local.project}-${local.environment}-backend"
-    }
-  }
-}
-EOF
-}
-generate "provider" {
-  path      = "provider.tf"
-  if_exists = "overwrite"
-  contents  = <<EOF
+
 provider "aws" {
   region  = var.aws_region
   assume_role {
-    role_arn = "arn:aws:iam::$${var.target_aws_account_id}:role/BCGOV_$${var.target_env}_Automation_Admin_Role"
+    role_arn = "arn:aws:iam::${var.target_aws_account_id}:role/BCGOV_${var.target_env}_Automation_Admin_Role"
   }
 }
-EOF
-}
+
 resource "aws_s3_bucket" "web_distribution" {
   bucket = "ssp-testing-bucket-devenv"
   acl    = "private"
