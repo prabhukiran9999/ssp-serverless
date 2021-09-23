@@ -3,6 +3,8 @@ name: Node.js CI
 on:
   pull_request:
     branches: [ master ]
+env:
+  environment: dev
 
 jobs:
   build:
@@ -31,6 +33,8 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TEAM_TOKEN }}
           
       - name: Deploying back-end using terraform
+        env:
+          TF_WORKSPACE: ${{ secrets.LICENCEPLATE }}-${{ env.environment }}-backend
              
         run: |
           
@@ -43,6 +47,8 @@ jobs:
      
      
       - name: Building front-end and deploying Frontend using terraform
+        env:
+          TF_WORKSPACE: ${{ secrets.LICENCEPLATE }}-${{ env.environment }}-frontend
              
         run: |
             terraform output > ./lambda/client/.env
