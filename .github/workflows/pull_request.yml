@@ -35,8 +35,8 @@ jobs:
       - name: Deploying back-end using terraform   
         run: |
           cat <<EOF > backend.hcl
-          organization = ${{ env.organization }}
-          workspaces { name = ${{ secrets.LICENCEPLATE }}-${{ env.environment }}-backend }
+          organization = "${{ env.organization }}"
+          workspaces { name = "${{ secrets.LICENCEPLATE }}-${{ env.environment }}-backend" }
           EOF
           
           terraform init -backend-config=backend.hcl
@@ -51,8 +51,8 @@ jobs:
           CI=false npm run build
 
           cat <<EOF > backend.hcl
-          organization = ${{ env.organization }}
-          workspaces { name = ${{ secrets.LICENCEPLATE }}-${{ env.environment }}-backend }
+          organization = "${{ env.organization }}"
+          workspaces { name = "${{ secrets.LICENCEPLATE }}-${{ env.environment }}-backend" }
           EOF
           
           terraform init-backend-config=backend.hcl
