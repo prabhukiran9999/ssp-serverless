@@ -2,11 +2,9 @@
 
 
 terraform {
-  backend "remote" {
-    
-    organization = "bcgov"
-    
-  }
+  backend "remote" {}
+      
+  
 }
 
 
