@@ -22,8 +22,8 @@ jobs:
     steps:
       - name: checkout the repo and building the Backend    
         uses: actions/checkout@v2
-      - name : building the backend
-             
+        
+      - name : building the backend 
         run: |
           
           cd ./lambda/server
@@ -36,37 +36,28 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TFC_TEAM_TOKEN }}
           
       - name: Deploying back-end using terraform
-        
-        
         run: |
-        
-          cat <<EOF > backend.tf
-          organization = ${{ env.organization }}
-          workspaces { name = ${{ secrets.LICENCEPLATE }}-${{ env.environment }}-backend }
-          EOF 
-          
-          terraform init
+          cat <<EOF > backend.hcl
+          organization = "${{ env.organization }}"
+          workspaces { name = "${{ secrets.LICENCEPLATE }}-${{ env.environment }}-backend" }
+          EOF
+
+          terraform init -backend-config=backend.hcl
           terraform apply -auto-approve
-         
-     
-     
-     
-     
+
       - name: Building front-end and deploying Frontend using terraform
-        
-           
         run: |
-            
-            terraform output > ./lambda/client/.env
-            cd ./lambda/client
-            npm install
-            
-            CI=false npm run build
-            
-            cat <<EOF > backend.tf
-            organization = ${{ env.organization }}
-            workspaces { name = ${{ secrets.LICENCEPLATE }}-${{ env.environment }}-frontend }
-            EOF 
-            terraform init
-            terraform apply -auto-approve
+          terraform output > ./lambda/client/.env
+          cd ./lambda/client
+          npm install
+
+          CI=false npm run build
+
+          cat <<EOF > backend.hcl
+          organization = "${{ env.organization }}"
+          workspaces { name = "${{ secrets.LICENCEPLATE }}-${{ env.environment }}-frontend" }
+          EOF
+
+          terraform init -backend-config=backend.hcl
+          terraform apply -auto-approve
           
